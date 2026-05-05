@@ -17,7 +17,9 @@
     "ioredis": "^5.10.1",
     "mongoose": "^9.6.1",
     "nanoid": "^5.1.11",
-    "redis": "5.12.1"
+    "redis": "5.12.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

@@ -80,3 +80,5 @@ class urlService{
         }
     }
 }
+
+export default urlService

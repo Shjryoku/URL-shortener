@@ -3,7 +3,7 @@ import controller from "./url.controller.js"
 
 const router = express.Router()
 
-router.post('/shorten', controller.createShortURL)
-router.get('/:shortCode', controller.restrictOriginalURL)
+router.post('/shorten', controller.getShortURL)
+router.get('/:shortCode', controller.getOriginalURL)
 
 export default router

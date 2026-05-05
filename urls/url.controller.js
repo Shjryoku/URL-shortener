@@ -33,4 +33,5 @@ async function getOriginalURL(req, res){
     }
 }
 
+const controller = { getShortURL, getOriginalURL }
 export default controller

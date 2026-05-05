@@ -14,7 +14,7 @@ class urlService{
     async createShortURL(longURL){
         if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
             longURL = "https://" + longURL
-            logger.info("URL normalized to HTTPS")
+            logger.info("createShortURL: URL normalized to HTTPS")
         }
         try {
             new URL(longURL)
@@ -41,7 +41,7 @@ class urlService{
 
         try{
             const res = await this.userModel.create(data)
-            logger.info(`Short URL Created: ${res._id}`)
+            logger.info(`createShortURL: Short URL Created: ${res._id}`)
             return toBase62(res._id)
         } catch(err){
             logger.error(err.stack)
@@ -59,13 +59,13 @@ class urlService{
     async restrictOriginalURL(shortCode){
         const id = fromBase62(shortCode)
         if(!Number.isInteger(id) || id < 0) { 
-            logger.warn(`Invalid shortCode attempt: ${shortCode}`)
+            logger.warn(`restrictOriginalURL: Invalid shortCode attempt: ${shortCode}`)
             throw new Error("Invalid shortCode") 
         }
 
         const cached = await client.get(shortCode)
         if(cached){
-            logger.info(`Got URL from Redis`)
+            logger.info("restrictOriginalURL: Got URL from Redis")
             return cached
         }
 
@@ -77,7 +77,7 @@ class urlService{
             )
             logger.info(`URL resolved: ${shortCode}`)
             if(!data){
-                logger.warn(`ShortCode not found: ${shortCode}`)
+                logger.warn(`restrictOriginalURL: ShortCode not found: ${shortCode}`)
                 throw new Error("URL not found")
             } 
             client.set(shortCode, data.originalURL)
@@ -85,7 +85,28 @@ class urlService{
         }
         catch (err) {
             logger.error(err.stack)
-            throw new Error("Failed to fetch URL: " + err.message)
+            throw new Error("restrictOriginalURL: Failed to fetch URL: " + err.message)
+        }
+    }
+
+    async returnURLClicks(shortCode){
+        const id = fromBase62(shortCode)
+        if(!Number.isInteger(id) || id < 0) { 
+            logger.warn(`Invalid shortCode attempt: ${shortCode}`)
+            throw new Error("Invalid shortCode") 
+        }
+
+        try{
+            const data = await this.userModel.findById(id)
+            if(data)
+                return data.clicks
+            else{
+                logger.error("URLClicks: data is null")
+                throw new Error("URL not found")
+            }
+        } catch (err){
+            logger.error(err.stack)
+            throw new Error("URLClicks: Failed to fetch URL: " + err.message)
         }
     }
 }

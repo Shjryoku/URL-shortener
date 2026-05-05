@@ -33,5 +33,18 @@ async function getOriginalURL(req, res){
     }
 }
 
-const controller = { getShortURL, getOriginalURL }
+async function getURLClicks(req, res){
+    const { shortCode } = req.params
+    if(!shortCode) return res.status(400).json("Bad Request")
+
+    try{
+        const clicks = await service.returnURLClicks(shortCode)
+        return res.status(200).json({ clicks })
+    } catch(err){
+        logger.error(err.stack)
+        return res.status(500).json({ error: "Internal server error" })
+    }
+}
+
+const controller = { getShortURL, getOriginalURL, getURLClicks }
 export default controller

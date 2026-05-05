@@ -1,5 +1,6 @@
 import app from "./app.js"
 import connectDB from "./config/db.js"
+import client from "./config/redis.js"
 import logger from "./utils/util.logger.js"
 import dotenv from "dotenv"
 dotenv.config()

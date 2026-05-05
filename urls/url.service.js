@@ -3,6 +3,8 @@ import urlCounter from "./url.counter.js";
 import toBase62 from "../utils/util.to.base62.js"
 import fromBase62 from "../utils/util.from.base62.js"
 import logger from "../utils/util.logger.js";
+import client from "../config/redis.js";
+
 
 class urlService{
     constructor(userModel){
@@ -61,6 +63,12 @@ class urlService{
             throw new Error("Invalid shortCode") 
         }
 
+        const cached = await client.get(shortCode)
+        if(cached){
+            logger.info(`Got URL from Redis`)
+            return cached
+        }
+
         try{
             const data = await this.userModel.findByIdAndUpdate(
                 id,
@@ -72,6 +80,7 @@ class urlService{
                 logger.warn(`ShortCode not found: ${shortCode}`)
                 throw new Error("URL not found")
             } 
+            client.set(shortCode, data.originalURL)
             return data.originalURL
         }
         catch (err) {

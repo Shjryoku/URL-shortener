@@ -11,3 +11,5 @@ function toBase62(num){
 
     return res.reverse().join("")
 }
+
+export default toBase62

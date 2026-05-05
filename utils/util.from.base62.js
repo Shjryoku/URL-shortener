@@ -9,3 +9,5 @@ function fromBase62(code){
 
     return res
 }
+
+export default fromBase62

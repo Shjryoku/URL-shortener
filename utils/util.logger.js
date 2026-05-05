@@ -1,4 +1,11 @@
-import fs from "fs/promises"
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const logPath = path.join(__dirname, "../logs/server.log")
 
 function info(msg) { log("INFO", msg) }
 function warn(msg) { log("WARN", msg) }
@@ -28,11 +35,12 @@ function toConsole(log){
 
 async function toFile(logString){
     fs.appendFile(
-        "server.log", 
+        logPath, 
         logString + "\n", 
         (err) => {
             if(err) console.log(err.name + " " + err.message + "\n")
     })
 }
 
+const logger = { info, warn, error, debug }
 export default logger
